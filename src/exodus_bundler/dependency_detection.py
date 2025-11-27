@@ -6,7 +6,7 @@ import subprocess
 from exodus_bundler.launchers import find_executable
 
 
-class PackageManager(object):
+class PackageManager:
     """Base class representing a package manager.
 
     The class level attributes can be overwritten in derived classes to customize the behavior.
@@ -21,11 +21,12 @@ class PackageManager(object):
             package that owns a specific file.
         owner_regex (str): A regex to extract the package name from the output of the owner command.
     """
+
     cache_directory = None
     list_command = None
-    list_regex = '(.*)'
+    list_regex = "(.*)"
     owner_command = None
-    owner_regex = '(.*)'
+    owner_regex = "(.*)"
 
     def find_dependencies(self, path):
         """Finds a list of all of the files contained with the package containing a file."""
@@ -37,7 +38,7 @@ class PackageManager(object):
         process = subprocess.Popen(args, stdout=subprocess.PIPE)
         stdout, stderr = process.communicate()
         dependencies = []
-        for line in stdout.decode('utf-8').split('\n'):
+        for line in stdout.decode("utf-8").split("\n"):
             match = re.search(self.list_regex, line.strip())
             if match:
                 dependency_path = match.groups()[0]
@@ -52,10 +53,10 @@ class PackageManager(object):
             return None
         args = self.owner_command + [path]
         env = os.environ.copy()
-        env['LC_ALL'] = 'C'
+        env["LC_ALL"] = "C"
         process = subprocess.Popen(args, stdout=subprocess.PIPE, env=env)
         stdout, stderr = process.communicate()
-        output = stdout.decode('utf-8').strip()
+        output = stdout.decode("utf-8").strip()
         match = re.search(self.owner_regex, output)
         if match:
             return match.groups()[0].strip()
@@ -73,27 +74,27 @@ class PackageManager(object):
 
 
 class Apt(PackageManager):
-    cache_directory = '/var/cache/apt'
-    list_command = ['dpkg-query', '-L']
-    list_regex = '(.+)'
-    owner_command = ['dpkg', '-S']
-    owner_regex = '(.+): '
+    cache_directory = "/var/cache/apt"
+    list_command = ["dpkg-query", "-L"]
+    list_regex = "(.+)"
+    owner_command = ["dpkg", "-S"]
+    owner_regex = "(.+): "
 
 
 class Pacman(PackageManager):
-    cache_directory = '/var/cache/pacman'
-    list_command = ['pacman', '-Ql']
-    list_regex = r'.*\s+(\/.+)'
-    owner_command = ['pacman', '-Qo']
-    owner_regex = r' is owned by (.*)\s+.*'
+    cache_directory = "/var/cache/pacman"
+    list_command = ["pacman", "-Ql"]
+    list_regex = r".*\s+(\/.+)"
+    owner_command = ["pacman", "-Qo"]
+    owner_regex = r" is owned by (.*)\s+.*"
 
 
 class Yum(PackageManager):
-    cache_directory = '/var/cache/yum'
-    list_command = ['rpm', '-ql']
-    list_regex = r'(.+)'
-    owner_command = ['rpm', '-qf']
-    owner_regex = r'(.+)'
+    cache_directory = "/var/cache/yum"
+    list_command = ["rpm", "-ql"]
+    list_regex = r"(.+)"
+    owner_command = ["rpm", "-qf"]
+    owner_regex = r"(.+)"
 
 
 package_managers = [

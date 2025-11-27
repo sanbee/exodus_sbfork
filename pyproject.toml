@@ -1,0 +1,89 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "exodus-bundler"
+version = "3.0.0"
+description = "The exodus application bundler."
+readme = {file = "README.md", content-type = "text/markdown"}
+license = {text = "BSD"}
+authors = [
+    {name = "Intoli", email = "contact@intoli.com"}
+]
+maintainers = [
+    {name = "Intoli", email = "contact@intoli.com"}
+]
+keywords = ["linux", "executable", "elf", "binaries"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: End Users/Desktop", 
+    "Intended Audience :: Information Technology",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: BSD License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11", 
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+    "Topic :: System :: Archiving :: Packaging",
+    "Topic :: Utilities",
+]
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Homepage = "https://github.com/intoli/exodus"
+Repository = "https://github.com/intoli/exodus"
+Issues = "https://github.com/intoli/exodus/issues"
+
+[project.scripts]
+exodus = "exodus_bundler.cli:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+include-package-data = true
+zip-safe = false
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+
+[tool.ruff.lint]
+select = ["E", "F", "W"]
+ignore = ["E501"]  # Ignore line length for now
+
+[tool.ruff.format]
+line-ending = "lf"
+[tool.pytest.ini_options]
+norecursedirs = [".git", ".tox", ".env", "dist", "build"]
+python_files = ["test_*.py", "*_test.py", "tests.py"]
+addopts = [
+    "-rxEfsw",
+    "--strict-markers", 
+    "--doctest-modules",
+    "--doctest-glob=*.rst",
+    "--tb=short"
+]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["src"]
+omit = ["*/tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError"
+]

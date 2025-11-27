@@ -5,23 +5,23 @@ import re
 
 # We don't actually want to include anything in these directories in bundles.
 blacklisted_directories = [
-    '/dev/',
-    '/proc/',
-    '/run/',
-    '/sys/',
+    "/dev/",
+    "/proc/",
+    "/run/",
+    "/sys/",
     # This isn't a directory exactly, but it will filter out active bundling.
-    '/tmp/exodus-bundle-',
+    "/tmp/exodus-bundle-",
 ]
 
 exec_methods = [
-    'execve',
-    'exec',
-    'execl',
-    'execlp',
-    'execle',
-    'execv',
-    'execvp',
-    'execvpe',
+    "execve",
+    "exec",
+    "execl",
+    "execlp",
+    "execle",
+    "execv",
+    "execvp",
+    "execvpe",
 ]
 
 
@@ -31,7 +31,7 @@ def extract_exec_path(line):
     for method in exec_methods:
         prefix = method + '("'
         if line.startswith(prefix):
-            line = line[len(prefix):]
+            line = line[len(prefix) :]
             parts = line.split('", ')
             if len(parts) > 1:
                 return parts[0]
@@ -43,14 +43,14 @@ def extract_open_path(line):
     line = strip_pid_prefix(line)
     for prefix in ['openat(AT_FDCWD, "', 'open("']:
         if line.startswith(prefix):
-            parts = line[len(prefix):].split('", ')
+            parts = line[len(prefix) :].split('", ')
             if len(parts) != 2:
                 continue
-            if 'ENOENT' in parts[1]:
+            if "ENOENT" in parts[1]:
                 continue
-            if 'O_RDONLY' not in parts[1]:
+            if "O_RDONLY" not in parts[1]:
                 continue
-            if 'O_DIRECTORY' in parts[1]:
+            if "O_DIRECTORY" in parts[1]:
                 continue
             return parts[0]
     return None
@@ -61,8 +61,8 @@ def extract_stat_path(line):
     line = strip_pid_prefix(line)
     prefix = 'stat("'
     if line.startswith(prefix):
-        parts = line[len(prefix):].split('", ')
-        if len(parts) == 2 and 'ENOENT' not in parts[1]:
+        parts = line[len(prefix) :].split('", ')
+        if len(parts) == 2 and "ENOENT" not in parts[1]:
             return parts[0]
     return None
 
@@ -104,7 +104,7 @@ def extract_paths(content, existing_only=True):
 
 def strip_pid_prefix(line):
     """Strips out the `[pid XXX] ` prefix if present."""
-    match = re.match(r'\[pid\s+\d+\]\s*', line)
+    match = re.match(r"\[pid\s+\d+\]\s*", line)
     if match:
-        return line[len(match.group()):]
+        return line[len(match.group()) :]
     return line
