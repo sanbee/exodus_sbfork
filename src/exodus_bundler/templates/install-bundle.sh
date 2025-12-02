@@ -39,6 +39,7 @@ function arg_processor() {
     fi
 }
 
+arg_processor $*
 echo "Installing executable bundle in \"${output_directory}\"..."
 mkdir -p ${output_directory} 2> /dev/null
 
