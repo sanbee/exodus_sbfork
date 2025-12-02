@@ -4,9 +4,9 @@ do_strip_bundle=0;
 
 function run_strip_command() {
     if [ ${do_strip_bundle} -eq 1 ]; then
-	echo "strip -p ${output_directory}/*/* 2> /dev/null";
+	strip -p $1/*/* 2> /dev/null;
     fi
-    }
+}
 
 function arg_processor() {
     output_directory="";
