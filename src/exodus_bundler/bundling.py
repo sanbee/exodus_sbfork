@@ -518,6 +518,12 @@ class File:
         """Computes a hash for the instance unique up to the file path and entry point."""
         return hash((self.path, self.entry_point))
 
+    def strip_after_copy(self,src,dest):
+        """Copy src to dest file, and run the strip command the dest file."""
+        shutil.copy(src, dest);
+        cmd="strip -p "+dest+" 2> /dev/null";
+        os.system(cmd);
+
     def __repr__(self):
         return f'<File(path="{self.path}")'
 
@@ -540,7 +546,8 @@ class File:
         if not os.path.exists(parent_directory):
             os.makedirs(parent_directory)
 
-        shutil.copy(self.path, full_destination)
+        #shutil.copy(self.path, full_destination)
+        self.strip_after_copy(self.path, full_destination);
 
         return full_destination
 
@@ -602,7 +609,8 @@ class File:
         # Copy over the linker.
         linker_path = os.path.join(source_parent, linker_basename)
         if not os.path.exists(linker_path):
-            shutil.copy(self.elf.linker_file.path, linker_path)
+            #shutil.copy(self.elf.linker_file.path, linker_path)
+            self.strip_after_copy(self.elf.linker_file.path, linker_path);
         else:
             assert filecmp.cmp(self.elf.linker_file.path, linker_path), (
                 'The "%s" linker file already exists and has differing contents.' % linker_path
@@ -674,7 +682,8 @@ class File:
             tt = source_path + ".sh"
             with open(tt, "w") as f:
                 f.write(launcher_content)
-        shutil.copymode(self.path, tt)
+        #shutil.copymode(self.path, tt)
+        self.strip_after_copy(self.path, tt);
 
         return os.path.normpath(os.path.abspath(tt))
 
@@ -860,7 +869,8 @@ class Bundle:
                 parent_directory = os.path.dirname(file_path)
                 if not os.path.exists(parent_directory):
                     os.makedirs(parent_directory)
-                shutil.copy(file.path, file_path)
+                #shutil.copy(file.path, file_path)
+                self.strip_after_copy(file.path, file_path)
                 continue
 
             # Copy over the actual file.
@@ -897,7 +907,8 @@ class Bundle:
             linker_dirname, linker_basename = os.path.split(linker_path)
             if not os.path.exists(linker_dirname):
                 os.makedirs(linker_dirname)
-            shutil.copy(linker.path, linker_path)
+            #shutil.copy(linker.path, linker_path)
+            self.strip_after_copy(linker.path, linker_path)
 
             # Now we need to construct a launcher for each executable that depends on this linker.
             for file in executable_files:
