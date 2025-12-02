@@ -682,8 +682,8 @@ class File:
             tt = source_path + ".sh"
             with open(tt, "w") as f:
                 f.write(launcher_content)
-        #shutil.copymode(self.path, tt)
-        self.strip_after_copy(self.path, tt);
+        shutil.copymode(self.path, tt)
+        #self.strip_after_copy(self.path, tt);
 
         return os.path.normpath(os.path.abspath(tt))
 
@@ -907,8 +907,8 @@ class Bundle:
             linker_dirname, linker_basename = os.path.split(linker_path)
             if not os.path.exists(linker_dirname):
                 os.makedirs(linker_dirname)
-            #shutil.copy(linker.path, linker_path)
-            self.strip_after_copy(linker.path, linker_path)
+            shutil.copy(linker.path, linker_path)
+            #self.strip_after_copy(linker.path, linker_path)
 
             # Now we need to construct a launcher for each executable that depends on this linker.
             for file in executable_files:
