@@ -519,10 +519,11 @@ class File:
         return hash((self.path, self.entry_point))
 
     def strip_after_copy(self,src,dest):
-        """Copy src to dest file, and run the strip command the dest file."""
+        """Copy src to dest file, and run the strip command on the dest file if the environment variable EXODUS_STRIP=1."""
         shutil.copy(src, dest);
-        cmd="strip -p "+dest+" 2> /dev/null";
-        os.system(cmd);
+        if (os.getenv("EXODUS_STRIP")=="1"):
+            cmd="strip -p "+dest+" 2> /dev/null";
+            os.system(cmd);
 
     def __repr__(self):
         return f'<File(path="{self.path}")'
